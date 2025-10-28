@@ -1,49 +1,73 @@
 name: Django CI/CD
  
 on:
+
   push:
+
     branches: [ main ]
+
   pull_request:
+
     branches: [ main ]
  
 jobs:
+
   build:
+
     runs-on: ubuntu-latest
  
     steps:
+
       - name: Checkout repository
+
         uses: actions/checkout@v3
  
       - name: Set up Python
+
         uses: actions/setup-python@v4
+
         with:
+
           python-version: "3.11"
  
       - name: Install dependencies
+
         run: |
+
           python -m pip install --upgrade pip
+
           pip install -r requirements.txt
+
           pip install pylint bandit pylint-django
  
       - name: Run migrations
+
         run: python manage.py migrate
+
         working-directory: flightbooking
  
       - name: Run Pylint
+
         run: |
+
           pylint --rcfile=../.pylintrc bookings || true
+
         working-directory: flightbooking
  
       - name: Run Bandit
+
         run: |
+
           cd flightbooking
+
           bandit -r bookings || true
+ 
   deploy:
 
     needs: build
 
     runs-on: ubuntu-latest
-
+ 
     steps:
 
       - name: Deploy to EC2
@@ -70,6 +94,8 @@ jobs:
 
             cd /home/ubuntu
  
+            # ✅ Load GitHub token for authenticated clone
+
             export GH_TOKEN=${{ secrets.GH_TOKEN }}
 
             export GIT_USER=${GITHUB_ACTOR}
@@ -96,7 +122,7 @@ jobs:
 
             fi
  
-            # activate virtual environment
+            # ✅ Set up or activate virtual environment
 
             source venv/bin/activate || python3 -m venv venv && source venv/bin/activate
 
@@ -104,14 +130,14 @@ jobs:
 
             pip install -r requirements.txt
  
-            # restart app services
+            # ✅ Restart Django app services
 
             sudo systemctl daemon-reload
 
             sudo systemctl restart gunicorn
 
             sudo systemctl reload nginx
-
+ 
             echo "✅ Deployment complete!"
 
  
