@@ -43,7 +43,7 @@ jobs:
     needs: build
 
     runs-on: ubuntu-latest
- 
+
     steps:
 
       - name: Deploy to EC2
@@ -63,17 +63,17 @@ jobs:
             set -e
 
             echo "🚀 Updating system and syncing repo..."
- 
-            # ensure dependencies
 
             sudo apt update -y
 
             sudo apt install -y python3-venv git
- 
+
             cd /home/ubuntu
  
-            # ✅ if the repo exists, just update it; otherwise clone fresh
+            export GH_TOKEN=${{ secrets.GH_TOKEN }}
 
+            export GIT_USER=${GITHUB_ACTOR}
+ 
             if [ -d "flightbookingapp-main/.git" ]; then
 
               echo "🔁 Existing repo found. Pulling latest changes..."
@@ -90,7 +90,7 @@ jobs:
 
               rm -rf flightbookingapp-main
 
-              git clone https://github.com/PRAVEEN-1005/django-flight-booking.git flightbookingapp-main
+              git clone https://${GIT_USER}:${GH_TOKEN}@github.com/PRAVEEN-1005/django-flight-booking.git flightbookingapp-main
 
               cd flightbookingapp-main
 
@@ -98,7 +98,7 @@ jobs:
  
             # activate virtual environment
 
-            source venv/bin/activate
+            source venv/bin/activate || python3 -m venv venv && source venv/bin/activate
 
             pip install --upgrade pip
 
@@ -111,7 +111,7 @@ jobs:
             sudo systemctl restart gunicorn
 
             sudo systemctl reload nginx
- 
+
             echo "✅ Deployment complete!"
 
  
