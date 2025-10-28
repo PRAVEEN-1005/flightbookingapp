@@ -38,8 +38,6 @@ jobs:
         run: |
           cd flightbooking
           bandit -r bookings || true
- 
-
   deploy:
 
     needs: build
@@ -72,23 +70,31 @@ jobs:
 
             sudo apt install -y python3-venv git
  
-            # navigate to correct project root
-
             cd /home/ubuntu
  
-            # clone or update repo in the correct path
+            # ✅ if the repo exists, just update it; otherwise clone fresh
 
-            if [ ! -d "flightbookingapp-main/.git" ]; then
+            if [ -d "flightbookingapp-main/.git" ]; then
+
+              echo "🔁 Existing repo found. Pulling latest changes..."
+
+              cd flightbookingapp-main
+
+              git fetch origin main
+
+              git reset --hard origin/main
+
+            else
+
+              echo "🆕 Cloning repository..."
+
+              rm -rf flightbookingapp-main
 
               git clone https://github.com/PRAVEEN-1005/django-flight-booking.git flightbookingapp-main
 
+              cd flightbookingapp-main
+
             fi
- 
-            cd flightbookingapp-main
-
-            git fetch origin main
-
-            git reset --hard origin/main
  
             # activate virtual environment
 
