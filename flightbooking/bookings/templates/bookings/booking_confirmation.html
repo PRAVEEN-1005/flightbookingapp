@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load booking_extras %}
+{% block content %}
+
+<div class="container mt-5">
+  <h1 class="mb-4 text-success">✅ Booking Confirmation</h1>
+
+  <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+
+  <h3>✈️ Flight Details</h3>
+  <p><strong>Flight:</strong> {{ booking.flight.flight_number }}</p>
+  <p><strong>From:</strong> {{ booking.flight.origin }} → <strong>To:</strong> {{ booking.flight.destination }}</p>
+  <p><strong>Departure:</strong> {{ booking.flight.departure_time }} |
+     <strong>Arrival:</strong> {{ booking.flight.arrival_time }}</p>
+
+  <h3>👤 Passenger Details</h3>
+  <p><strong>Name:</strong> {{ booking.passenger.first_name }} {{ booking.passenger.last_name }}</p>
+  <p><strong>Email:</strong> {{ booking.passenger.email }}</p>
+
+  <h3>📑 Booking Details</h3>
+  <ul style="list-style:none; padding:0; margin:0;">
+    {% seat_pnr_pairs booking.seat_numbers booking.pnr_codes as seat_pairs %}
+    {% for seat, pnr in seat_pairs %}
+      <li>🎟 Seat <strong>{{ seat }}</strong> → PNR: <span class="fw-bold text-primary">{{ pnr }}</span></li>
+    {% endfor %}
+  </ul>
+
+  <p><strong>Total Fare:</strong> ₹{{ booking.total_fare }}</p>
+  {% if booking.refund_needed %}
+    <div class="alert alert-info mt-2">
+      <p><strong>Original Fare:</strong> ₹{{ booking.original_fare }}</p>
+      <p><strong>New Fare:</strong> ₹{{ booking.total_fare }}</p>
+      <p><strong>Refund Amount:</strong> <span class="fw-bold text-danger">₹{{ booking.refund_amount }}</span></p>
+    </div>
+  {% endif %}
+
+  <p><strong>Payment Status:</strong>
+    <span class="badge {% if booking.payment_status == 'Confirmed' %} bg-success {% else %} bg-warning text-dark {% endif %}">
+      {{ booking.payment_status }}
+    </span>
+  </p>
+
+  <hr>
+  {% if booking.refund_needed %}
+    <p class="text-info fw-bold">
+      Booking updated successfully! Refund is being processed. Redirecting to the home page in <span id="countdown">5</span> seconds...
+    </p>
+  {% else %}
+    <p class="text-success fw-bold">
+      Booking successful! You will be redirected to the home page in <span id="countdown">5</span> seconds...
+    </p>
+  {% endif %}
+
+  <script>
+    let seconds = 5;
+    let countdownEl = document.getElementById("countdown");
+
+    setInterval(function() {
+        if (seconds > 1) {
+            seconds--;
+            countdownEl.innerText = seconds;
+        } else {
+            window.location.href = "/";  // Redirect to home
+        }
+    }, 1000);
+  </script>
+</div>
+
+{% endblock %}

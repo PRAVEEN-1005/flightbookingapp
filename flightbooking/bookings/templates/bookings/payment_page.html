@@ -1,0 +1,16 @@
+<h1>Payment Page</h1>
+
+<p><strong>Booking ID:</strong> {{ booking.id }}</p>
+<p><strong>Flight:</strong> {{ booking.flight.flight_number }}</p>
+<p><strong>Passenger:</strong> {{ booking.passenger.first_name }} {{ booking.passenger.last_name }}</p>
+<p><strong>Seats:</strong> {{ booking.seat_numbers }}</p>
+<p><strong>Total Fare:</strong> ₹{{ booking.total_fare }}</p>
+
+<hr>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" style="padding:10px 20px; background:green; color:white; border:none; border-radius:5px;">
+    Pay & Confirm
+  </button>
+</form>

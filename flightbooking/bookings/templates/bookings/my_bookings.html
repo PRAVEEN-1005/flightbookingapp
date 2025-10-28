@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+  <h1 class="mb-4 text-primary">📖 My Bookings</h1>
+
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Booking ID</th>
+        <th>Flight</th>
+        <th>Passenger</th>
+        <th>Seats</th>
+        <th>Status</th>
+        <th>Refunded Seats</th>
+        <th>Refund Amount</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for booking in bookings %}
+        <tr>
+          <td>#{{ booking.id }}</td>
+          <td>{{ booking.flight.flight_number }}<br>
+              {{ booking.flight.origin }} → {{ booking.flight.destination }}</td>
+          <td>{{ booking.passenger.first_name }} {{ booking.passenger.last_name }}</td>
+          <td>{{ booking.seat_numbers }}</td>
+          <td>
+            {% if booking.payment_status == "Confirmed" %}
+              <span class="badge bg-success">Confirmed</span>
+            {% elif booking.payment_status == "Pending" %}
+              <span class="badge bg-warning text-dark">Pending</span>
+            {% elif booking.payment_status == "Refunded" %}
+              <span class="badge bg-info">Refunded</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if booking.refunded_seats %}
+              {{ booking.refunded_seats }}
+            {% else %}
+              <em>—</em>
+            {% endif %}
+          </td>
+          <td>
+            {% if booking.refund_amount %}
+              ₹{{ booking.refund_amount }}
+            {% else %}
+              <em>—</em>
+            {% endif %}
+          </td>
+          <td>
+            {% if booking.payment_status == "Pending" %}
+              <a href="{% url 'pay_booking' booking.id %}" class="btn btn-sm btn-primary">💳 Pay</a>
+            {% endif %}
+            {% if booking.refund_needed %}
+              <a href="{% url 'request_refund' booking.id %}" class="btn btn-sm btn-danger">💰 Refund</a>
+            {% endif %}
+            <a href="{% url 'booking_edit' booking.id %}" class="btn btn-sm btn-warning">✏️ Edit</a>
+            <a href="{% url 'booking_delete' booking.id %}" class="btn btn-sm btn-danger">🗑️ Cancel</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="8" class="text-center">No bookings found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+{% endblock %}

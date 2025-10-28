@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+  <h1 class="mb-4 text-info">💰 Refund Confirmation</h1>
+
+  <p><strong>Booking ID:</strong> #{{ booking.id }}</p>
+
+  <h3>✈️ Flight Details</h3>
+  <p><strong>Flight:</strong> {{ booking.flight.flight_number }}</p>
+  <p><strong>Route:</strong> {{ booking.flight.origin }} → {{ booking.flight.destination }}</p>
+
+  <h3>👤 Passenger</h3>
+  <p>{{ booking.passenger.first_name }} {{ booking.passenger.last_name }}</p>
+
+  <h3>🎟 Refunded Seats</h3>
+  <ul>
+    {% if refunded_seats %}
+      {% for seat in refunded_seats %}
+        <li>Seat: <strong>{{ seat }}</strong></li>
+      {% endfor %}
+    {% else %}
+      <li><em>No seats were refunded</em></li>
+    {% endif %}
+  </ul>
+
+  <h3>💵 Refund Details</h3>
+  <p><strong>Refund Amount:</strong> ₹{{ booking.refund_amount }}</p>
+
+  <div class="alert alert-success mt-3">
+    ✅ Refund has been successfully processed.
+  </div>
+
+  <a href="{% url 'my_bookings' %}" class="btn btn-primary mt-3">🔙 Back to My Bookings</a>
+</div>
+
+{% endblock %}

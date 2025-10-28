@@ -1,0 +1,103 @@
+<h1>Book Flight {{ flight.flight_number }}</h1>
+
+<p><strong>From:</strong> {{ flight.origin }} → <strong>To:</strong> {{ flight.destination }}</p>
+<p><strong>Departure:</strong> {{ flight.departure_time }} | <strong>Arrival:</strong> {{ flight.arrival_time }}</p>
+<p><strong>Fare per seat:</strong> ₹{{ flight.fare }}</p>
+
+{% if error %}
+  <p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+
+  <label for="first_name">First Name:</label>
+  <input type="text" name="first_name" required><br><br>
+
+  <label for="last_name">Last Name:</label>
+  <input type="text" name="last_name" required><br><br>
+
+  <label for="email">Email:</label>
+  <input type="email" name="email" required><br><br>
+
+  <!-- ✅ Seat Selection Grid -->
+  <h3>Select Your Seats (you can choose multiple):</h3>
+
+  {% for row in rows %}
+    <div class="seat-row d-flex justify-content-center mb-2">
+
+      <!-- Left block (A–C) -->
+      <div class="d-flex me-4">
+        {% for seat in left_seats %}
+          {% with seat_id=row|stringformat:"s"|add:seat %}
+            <input type="checkbox"
+                   name="seats"
+                   value="{{ seat_id }}"
+                   id="{{ seat_id }}"
+                   {% if seat_id in booked_seats %} disabled {% endif %}>
+            <label for="{{ seat_id }}"
+                   class="seat {% if seat_id in booked_seats %} booked {% endif %}">
+              {{ row }}{{ seat }}
+            </label>
+          {% endwith %}
+        {% endfor %}
+      </div>
+
+      <!-- Right block (D–F) -->
+      <div class="d-flex ms-4">
+        {% for seat in right_seats %}
+          {% with seat_id=row|stringformat:"s"|add:seat %}
+            <input type="checkbox"
+                   name="seats"
+                   value="{{ seat_id }}"
+                   id="{{ seat_id }}"
+                   {% if seat_id in booked_seats %} disabled {% endif %}>
+            <label for="{{ seat_id }}"
+                   class="seat {% if seat_id in booked_seats %} booked {% endif %}">
+              {{ row }}{{ seat }}
+            </label>
+          {% endwith %}
+        {% endfor %}
+      </div>
+
+    </div>
+  {% endfor %}
+
+  <br>
+  <button type="submit">Confirm Booking</button>
+</form>
+
+<!-- ✅ Inline CSS for seat styling -->
+<style>
+  .seat {
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    margin: 3px;
+    text-align: center;
+    line-height: 45px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #e0f7fa;
+  }
+
+  .seat.booked {
+    background-color: red;
+    color: white;
+    cursor: not-allowed;
+  }
+
+  input[type="checkbox"] {
+    display: none;
+  }
+
+  input[type="checkbox"]:checked + .seat {
+    background-color: green;
+    color: white;
+  }
+
+  .seat-row {
+    margin-bottom: 8px;
+  }
+</style>

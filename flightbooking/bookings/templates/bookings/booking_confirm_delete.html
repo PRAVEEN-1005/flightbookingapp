@@ -1,0 +1,17 @@
+<h1>Cancel Booking</h1>
+
+<p>Are you sure you want to cancel this booking?</p>
+
+<ul>
+  <li><strong>Flight:</strong> {{ object.flight.flight_number }} ({{ object.flight.origin }} → {{ object.flight.destination }})</li>
+  <li><strong>Seats:</strong> {{ object.seat_numbers }}</li>
+  <li><strong>Total Fare:</strong> ₹{{ object.total_fare }}</li>
+  <li><strong>Passenger:</strong> {{ object.passenger.first_name }} {{ object.passenger.last_name }}</li>
+  <li><strong>Email:</strong> {{ object.passenger.email }}</li>
+</ul>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Yes, Cancel Booking</button>
+  <a href="{% url 'my_bookings' %}">No, Go Back</a>
+</form>

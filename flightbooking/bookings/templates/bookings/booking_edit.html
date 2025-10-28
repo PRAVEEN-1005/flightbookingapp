@@ -1,0 +1,58 @@
+<h1>Edit Booking</h1>
+
+{% if error %}
+  <p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+
+  <h3>Select Your New Seats:</h3>
+
+  {% for row in rows %}
+    <div class="seat-row d-flex justify-content-center mb-2">
+
+      <!-- Left block (A–C) -->
+      <div class="d-flex me-4">
+        {% for seat in left_seats %}
+          {% with seat_id=row|stringformat:"s"|add:seat %}
+            <input type="checkbox"
+                   name="seat_numbers"
+                   value="{{ seat_id }}"
+                   id="{{ seat_id }}"
+                   {% if seat_id in booked_seats %} disabled {% endif %}
+                   {% if seat_id in selected_seats %} checked {% endif %}>
+            <label for="{{ seat_id }}"
+                   class="seat {% if seat_id in booked_seats %} booked {% endif %}">
+              {{ row }}{{ seat }}
+            </label>
+          {% endwith %}
+        {% endfor %}
+      </div>
+
+      <!-- Right block (D–F) -->
+      <div class="d-flex ms-4">
+        {% for seat in right_seats %}
+          {% with seat_id=row|stringformat:"s"|add:seat %}
+            <input type="checkbox"
+                   name="seat_numbers"
+                   value="{{ seat_id }}"
+                   id="{{ seat_id }}"
+                   {% if seat_id in booked_seats %} disabled {% endif %}
+                   {% if seat_id in selected_seats %} checked {% endif %}>
+            <label for="{{ seat_id }}"
+                   class="seat {% if seat_id in booked_seats %} booked {% endif %}">
+              {{ row }}{{ seat }}
+            </label>
+          {% endwith %}
+        {% endfor %}
+      </div>
+
+    </div>
+  {% endfor %}
+
+  <br>
+  <button type="submit">Save Changes</button>
+</form>
+
+<a href="{% url 'my_bookings' %}">Back to My Bookings</a>
