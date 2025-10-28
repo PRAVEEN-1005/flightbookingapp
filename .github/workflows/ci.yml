@@ -61,7 +61,6 @@ jobs:
           cd flightbooking
 
           bandit -r bookings || true
- 
   deploy:
 
     needs: build
@@ -94,12 +93,6 @@ jobs:
 
             cd /home/ubuntu
  
-            # ✅ Load GitHub token for authenticated clone
-
-            export GH_TOKEN=${{ secrets.GH_TOKEN }}
-
-            export GIT_USER=${GITHUB_ACTOR}
- 
             if [ -d "flightbookingapp-main/.git" ]; then
 
               echo "🔁 Existing repo found. Pulling latest changes..."
@@ -116,7 +109,7 @@ jobs:
 
               rm -rf flightbookingapp-main
 
-              git clone https://${GIT_USER}:${GH_TOKEN}@github.com/PRAVEEN-1005/django-flight-booking.git flightbookingapp-main
+              git clone https://github.com/PRAVEEN-1005/flightbookingapp.git flightbookingapp-main
 
               cd flightbookingapp-main
 
