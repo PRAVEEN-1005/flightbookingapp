@@ -39,48 +39,73 @@ jobs:
           cd flightbooking
           bandit -r bookings || true
  
+
   deploy:
+
     needs: build
+
     runs-on: ubuntu-latest
  
     steps:
+
       - name: Deploy to EC2
+
         uses: appleboy/ssh-action@v0.1.10
+
         with:
+
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
+
+          username: ubuntu
+
           key: ${{ secrets.EC2_SSH_KEY }}
+
           script: |
-            sudo apt update
+
+            set -e
+
+            echo "🚀 Updating system and syncing repo..."
+ 
+            # ensure dependencies
+
+            sudo apt update -y
+
             sudo apt install -y python3-venv git
  
-            # Ensure the app directory exists
-            mkdir -p /home/ubuntu/flightbookingapp-main
-            cd /home/ubuntu/flightbookingapp-main
+            # navigate to correct project root
+
+            cd /home/ubuntu
  
-            # Clone if missing, otherwise pull updates
-            if [ ! -d ".git" ]; then
-              git clone https://github.com/PRAVEEN-1005/django-flight-booking.git .
-            else
-              git fetch origin main
-              git reset --hard origin/main
+            # clone or update repo in the correct path
+
+            if [ ! -d "flightbookingapp-main/.git" ]; then
+
+              git clone https://github.com/PRAVEEN-1005/django-flight-booking.git flightbookingapp-main
+
             fi
  
-            # Setup virtual environment
-            if [ ! -d "venv" ]; then
-              python3 -m venv venv
-            fi
+            cd flightbookingapp-main
+
+            git fetch origin main
+
+            git reset --hard origin/main
  
+            # activate virtual environment
+
             source venv/bin/activate
+
             pip install --upgrade pip
-            pip install -r flightbooking/requirements.txt
+
+            pip install -r requirements.txt
  
-            # Apply migrations (just in case)
-            cd flightbooking
-            python manage.py migrate --noinput
-            cd ..
- 
-            # Restart Gunicorn service
+            # restart app services
+
             sudo systemctl daemon-reload
+
             sudo systemctl restart gunicorn
-            sudo systemctl status gunicorn --no-pager
+
+            sudo systemctl reload nginx
+ 
+            echo "✅ Deployment complete!"
+
+ 
