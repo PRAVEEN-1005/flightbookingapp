@@ -1,104 +1,96 @@
 {% extends "base.html" %}
 {% block content %}
-
-<<<<<<< HEAD
-<h1 class="mb-4">✈️ Search flights NOWWE!</h1>
-=======
+ 
 <h1 class="mb-4">✈️ Search flights NOW</h1>
->>>>>>> 39667e3 (newfix)
-
+ 
 <!-- ✅ Flight Search Form -->
 <form method="post" class="row g-3 p-3 bg-light border rounded shadow-sm">
   {% csrf_token %}
-
+ 
   <!-- Trip type selection -->
-  <div class="col-12">
-    <label class="form-label me-3">
-      <input type="radio" name="trip_type" value="oneway" checked> One Way
-    </label>
-    <label class="form-label">
-      <input type="radio" name="trip_type" value="round"> Round Trip
-    </label>
-  </div>
-
+<div class="col-12">
+<label class="form-label me-3">
+<input type="radio" name="trip_type" value="oneway" checked> One Way
+</label>
+<label class="form-label">
+<input type="radio" name="trip_type" value="round"> Round Trip
+</label>
+</div>
+ 
   <!-- Origin -->
-  <div class="col-md-3">
-    <label for="origin" class="form-label">From</label>
-    <input type="text" name="origin" id="origin" class="form-control" placeholder="City / Airport" required>
-  </div>
-
+<div class="col-md-3">
+<label for="origin" class="form-label">From</label>
+<input type="text" name="origin" id="origin" class="form-control" placeholder="City / Airport" required>
+</div>
+ 
   <!-- Destination -->
-  <div class="col-md-3">
-    <label for="destination" class="form-label">To</label>
-    <input type="text" name="destination" id="destination" class="form-control" placeholder="City / Airport" required>
-  </div>
-
+<div class="col-md-3">
+<label for="destination" class="form-label">To</label>
+<input type="text" name="destination" id="destination" class="form-control" placeholder="City / Airport" required>
+</div>
+ 
   <!-- Departure -->
-  <div class="col-md-3">
-<<<<<<< HEAD
-    <label for="departure" class="form-label">Departure DatE</label>
-=======
-    <label for="departure" class="form-label">Departure Date</label>
->>>>>>> 39667e3 (newfix)
-    <input type="date" name="departure_date" id="departure" class="form-control" required>
-  </div>
-
+<div class="col-md-3">
+<label for="departure" class="form-label">Departure Date</label>
+<input type="date" name="departure_date" id="departure" class="form-control" required>
+</div>
+ 
   <!-- Return -->
-  <div class="col-md-3">
-    <label for="return" class="form-label">Return Date</label>
-    <input type="date" name="return_date" id="return" class="form-control">
-  </div>
-
+<div class="col-md-3">
+<label for="return" class="form-label">Return Date</label>
+<input type="date" name="return_date" id="return" class="form-control">
+</div>
+ 
   <!-- Submit button -->
-  <div class="col-12 d-grid">
-    <button type="submit" class="btn btn-primary btn-lg">Search Flights</button>
-  </div>
+<div class="col-12 d-grid">
+<button type="submit" class="btn btn-primary btn-lg">Search Flights</button>
+</div>
 </form>
-
+ 
 <!-- ✅ Departure Flights -->
 {% if flights %}
-  <h2 class="mt-5">Available Departure Flights</h2>
-  <div class="row">
+<h2 class="mt-5">Available Departure Flights</h2>
+<div class="row">
     {% for flight in flights %}
-      <div class="col-md-4">
-        <div class="card mb-3 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">{{ flight.flight_number }}</h5>
-            <p class="card-text">
-              <strong>{{ flight.origin }}</strong> → <strong>{{ flight.destination }}</strong><br>
+<div class="col-md-4">
+<div class="card mb-3 shadow-sm">
+<div class="card-body">
+<h5 class="card-title">{{ flight.flight_number }}</h5>
+<p class="card-text">
+<strong>{{ flight.origin }}</strong> → <strong>{{ flight.destination }}</strong><br>
               Departure: {{ flight.departure_time }} <br>
               Arrival: {{ flight.arrival_time }} <br>
               Fare: ₹{{ flight.fare }}
-            </p>
-            <a href="{% url 'book_flight' flight.id %}" class="btn btn-success w-100">Book Now</a>
-          </div>
-        </div>
-      </div>
+</p>
+<a href="{% url 'book_flight' flight.id %}" class="btn btn-success w-100">Book Now</a>
+</div>
+</div>
+</div>
     {% endfor %}
-  </div>
+</div>
 {% endif %}
-
+ 
 <!-- ✅ Return Flights -->
 {% if return_flights %}
-  <h2 class="mt-5">Available Return Flights</h2>
-  <div class="row">
+<h2 class="mt-5">Available Return Flights</h2>
+<div class="row">
     {% for flight in return_flights %}
-      <div class="col-md-4">
-        <div class="card mb-3 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">{{ flight.flight_number }}</h5>
-            <p class="card-text">
-              <strong>{{ flight.origin }}</strong> → <strong>{{ flight.destination }}</strong><br>
+<div class="col-md-4">
+<div class="card mb-3 shadow-sm">
+<div class="card-body">
+<h5 class="card-title">{{ flight.flight_number }}</h5>
+<p class="card-text">
+<strong>{{ flight.origin }}</strong> → <strong>{{ flight.destination }}</strong><br>
               Departure: {{ flight.departure_time }} <br>
               Arrival: {{ flight.arrival_time }} <br>
               Fare: ₹{{ flight.fare }}
-            </p>
-            <a href="{% url 'book_flight' flight.id %}" class="btn btn-success w-100">Book Now</a>
-          </div>
-        </div>
-      </div>
+</p>
+<a href="{% url 'book_flight' flight.id %}" class="btn btn-success w-100">Book Now</a>
+</div>
+</div>
+</div>
     {% endfor %}
-  </div>
+</div>
 {% endif %}
-
+ 
 {% endblock %}
